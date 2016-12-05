@@ -31,39 +31,45 @@ public class Benham {
 
                 int [][] dcp = dct.ForwardDCT(a);
                 double k = Math.abs(dcp[1][2]) - Math.abs(dcp[2][1]);
+                byte o = check(dcp[1][2], dcp[2][1], dcp[3][3]);
+
                 if (getBit(msg[i], j) == 1) {
-                    if (k <= 25) {
-                        dcp[1][2] = (dcp[2][1]>=0) ? Math.abs(dcp[2][1]) + 100 : -1*(Math.abs(dcp[2][1]) + 100);
+                    if (o != 1) {
+                        dcp[3][3] = (dcp[2][1] < dcp[1][2]) ? (dcp[2][1] - 25) : (dcp[1][2] - 25);
                     }
-                } else if (k >= -25) {
-                    dcp[2][1] = (dcp[2][1]>=0) ? Math.abs(dcp[1][2]) + 100 : -1*(Math.abs(dcp[1][2]) + 100);
+                } else if (o != 0) {
+                    dcp[3][3] = (dcp[2][1] > dcp[1][2]) ? (dcp[2][1] + 25) : (dcp[1][2] + 25);
                 }
 
                 setBlueColorArray(img, i * 8 + j, dct.InverseDCT(dcp));
             }
         }
     }
+    private static byte check(int a, int b, int c){
+
+        if((a > b && b > c) || (b > a && a > c) || (a == b && a > c)){
+            return 1;
+        }
+        if((c > a && a > b) || (c > b && b > a) || (a == b && c > a)){
+            return 0;
+        }
+        return -1;
+    }
 
     public static void getCipherMessage(BufferedImage img) {
         int i = 0;
         byte[] b = new byte[1];
         while (true) {
-            byte o;
+
             int[][] a = getBlueColorArray(img, i);
             int[][] dcp = dct.ForwardDCT(a);
-            double k = Math.abs(dcp[1][2]) - Math.abs(dcp[2][1]);
-            if (k >= 25) {
-                o = 1;
-            } else if (k <= -25) {
-                o = 0;
-            } else {
-                o = -1;
-            }
+            byte o = check(dcp[1][2], dcp[2][1], dcp[3][3]);
 
             b[0] = setBit(b[0], o, i % 8);
 
             if ((int)(o) == -1)
                 break;
+
             if (i % 8 == 7) {
                 System.out.print(new String(b));
                 b[0] = 0;
@@ -104,9 +110,9 @@ public class Benham {
     }
     public static void main(String[] args) throws IOException {
 
-        BufferedImage img = ImageIO.read(new File("src\\src.bmp"));
-        getCipherPicture(img, "Hello world!");
-        ImageIO.write(img, "bmp", new File("secret.bmp"));
+//        BufferedImage img = ImageIO.read(new File("src\\src.bmp"));
+//        getCipherPicture(img, "Hello world!");
+//        ImageIO.write(img, "bmp", new File("secret.bmp"));
 
 
                 BufferedImage img2 = ImageIO.read(new File("secret.bmp"));
