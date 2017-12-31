@@ -7,3 +7,6 @@
 *.jar
 *.rar
 *.zip
+*node_modules*
+*/target/*
+*target*
