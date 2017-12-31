@@ -17,7 +17,8 @@ public class Sha256 {
         int h6 = 0x1f83d9ab;
         int h7 = 0x5be0cd19;
 
-        int[] k = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+        int[] k = {
+                0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
                 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
                 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
                 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
@@ -26,7 +27,7 @@ public class Sha256 {
                 0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
                 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-        //pad byte array, assume ASCII encoding
+
         int orig_len = data.length; //length in bytes
         long orig_len_bits = orig_len * 8;  //length in bits
 
@@ -35,7 +36,7 @@ public class Sha256 {
         with_one[with_one.length - 1] = (byte) 0x80;    //append 1
         int new_length = with_one.length*8;     //get new length in bits
 
-        //find length multiple of 512
+
         while (new_length % 512 != 448) {
             new_length += 8;
         }
@@ -54,7 +55,7 @@ public class Sha256 {
         int size = output.length;
         int num_chunks = size * 8 /512;
 
-        //for each chunk
+
         for (int i = 0; i < num_chunks; i++) {
             int[] w = new int[64];
 
@@ -63,7 +64,7 @@ public class Sha256 {
                 w[j] =  ((output[i*512/8 + 4*j] << 24) & 0xFF000000) | ((output[i*512/8 + 4*j+1] << 16) & 0x00FF0000);
                 w[j] |= ((output[i*512/8 + 4*j+2] << 8) & 0xFF00) | (output[i*512/8 + 4*j+3] & 0xFF);
             }
-            //extend first 16 into remaining
+
             for (int j = 16; j < 64; j++) {
                 int s0 = right_rotate(w[j-15], 7) ^ right_rotate(w[j-15], 18) ^ (w[j-15] >>> 3);
                 int s1 = right_rotate(w[j-2], 17) ^ right_rotate(w[j-2], 19) ^ (w[j-2] >>> 10);

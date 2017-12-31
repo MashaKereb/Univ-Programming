@@ -16,7 +16,8 @@ public class Sha384 {
         long h6 = 0xdb0c2e0d64f98fa7L;
         long h7 = 0x47b5481dbefa4fa4L;
 
-        long[] k = {0x428a2f98d728ae22L, 0x7137449123ef65cdL, 0xb5c0fbcfec4d3b2fL, 0xe9b5dba58189dbbcL, 0x3956c25bf348b538L,
+        long[] k = {
+                0x428a2f98d728ae22L, 0x7137449123ef65cdL, 0xb5c0fbcfec4d3b2fL, 0xe9b5dba58189dbbcL, 0x3956c25bf348b538L,
                 0x59f111f1b605d019L, 0x923f82a4af194f9bL, 0xab1c5ed5da6d8118L, 0xd807aa98a3030242L, 0x12835b0145706fbeL,
                 0x243185be4ee4b28cL, 0x550c7dc3d5ffb4e2L, 0x72be5d74f27b896fL, 0x80deb1fe3b1696b1L, 0x9bdc06a725c71235L,
                 0xc19bf174cf692694L, 0xe49b69c19ef14ad2L, 0xefbe4786384f25e3L, 0x0fc19dc68b8cd5b5L, 0x240ca1cc77ac9c65L,
@@ -31,9 +32,10 @@ public class Sha384 {
                 0x90befffa23631e28L, 0xa4506cebde82bde9L, 0xbef9a3f7b2c67915L, 0xc67178f2e372532bL, 0xca273eceea26619cL,
                 0xd186b8c721c0c207L, 0xeada7dd6cde0eb1eL, 0xf57d4f7fee6ed178L, 0x06f067aa72176fbaL, 0x0a637dc5a2c898a6L,
                 0x113f9804bef90daeL, 0x1b710b35131c471bL, 0x28db77f523047d84L, 0x32caab7b40c72493L, 0x3c9ebe0a15c9bebcL,
-                0x431d67c49c100d4cL, 0x4cc5d4becb3e42b6L, 0x597f299cfc657e2aL, 0x5fcb6fab3ad6faecL, 0x6c44198c4a475817L};
+                0x431d67c49c100d4cL, 0x4cc5d4becb3e42b6L, 0x597f299cfc657e2aL, 0x5fcb6fab3ad6faecL, 0x6c44198c4a475817L
+        };
 
-        //pad byte array, assume ASCII encoding
+
         int orig_len = data.length; //length in bytes
         long orig_len_bits = orig_len * 8;  //length in bits
 
@@ -42,7 +44,6 @@ public class Sha384 {
         with_one[with_one.length - 1] = (byte) 0x80;    //append 1
         int new_length = with_one.length*8;     //get new length in bits
 
-        //find length multiple of 512
         while (new_length % 1024 != 896) {
             new_length += 8;
         }
@@ -61,25 +62,24 @@ public class Sha384 {
         int size = output.length;
         int num_chunks = size * 8 /1024;
 
-        //for each chunk
         for (int i = 0; i < num_chunks; i++) {
             long[] w = new long[80];
 
-            //divide chunk into 16 64 bit words
+            //divide chunk
             for (int j = 0; j < 16; j++) {
                 w[j] = (((long)(output[i*1024/8 + 8*j]) << 56) & 0xFF00000000000000L) | (((long)(output[i*1024/8 + 8*j+1]) << 48) & 0x00FF000000000000L);
                 w[j] |= (((long)(output[i*1024/8 + 8*j+2]) << 40) & 0x0000FF0000000000L) | (((long)(output[i*1024/8 + 8*j+3]) << 32) & 0x000000FF00000000L);
                 w[j] |= (((long)(output[i*1024/8 + 8*j+4]) << 24) & 0xFF000000L) | (((long)(output[i*1024/8 + 8*j+5]) << 16) & 0xFF0000L);
                 w[j] |= ((long)((output[i*1024/8 + 8*j+6]) << 8) & 0xFF00L) | ((long)((output[i*1024/8 + 8*j+7])) & 0xFFL);
             }
-            //extend first 16 into remaining
+
             for (int j = 16; j < 80; j++) {
                 long s0 = right_rotate(w[j-15], 1) ^ right_rotate(w[j-15], 8) ^ (w[j-15] >>> 7);
                 long s1 = right_rotate(w[j-2], 19) ^ right_rotate(w[j-2], 61) ^ (w[j-2] >>> 6);
                 w[j] = w[j-16] + s0 + w[j-7] + s1;
             }
 
-            //initialize working variables
+
             long a = h0;
             long b = h1;
             long c = h2;

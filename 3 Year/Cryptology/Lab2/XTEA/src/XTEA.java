@@ -14,7 +14,7 @@ public class XTEA {
         for (int i = 0; i < NUM_ROUNDS; i++) {
             block[1] -= (key[(int) ((sum & 0x1933) >>> 11)] + sum ^ block[0] + (block[0] << 4 ^ block[0] >>> 5));
             sum -= DELTA;
-            block[0] -= ((block[1] << 4 ^ block[1] >>> 5) + block[1] ^ key[(int) (sum & 0x3)] + sum);
+            block[0] -= ((block[1] << 4 ^ block[1] >>> 5) + block[1] ^ key[(int) (sum & 3)] + sum);
         }
     }
 
@@ -41,16 +41,17 @@ public class XTEA {
     }
 
     public byte[] encrypt(byte[] data) {
+        byte[] res = data.clone();
         int numBlocks = data.length / 8;
         int[] block = new int[2];
         for (int i = 0; i < numBlocks; i++) {
             block[0] = getInt((i * 8), data);
             block[1] = getInt((i * 8) + 4, data);
             encipher(block);
-            putInt(block[0], (i * 8), data);
-            putInt(block[1], (i * 8) + 4, data);
+            putInt(block[0], (i * 8), res);
+            putInt(block[1], (i * 8) + 4, res);
         }
-        return data;
+        return res;
     }
 
     public static int getInt(int index, byte[] buffer) {

@@ -1,5 +1,3 @@
-import java.math.BigInteger;
-
 /**
  * Created by Masha Kereb on 04-Dec-16.
  */
@@ -23,7 +21,7 @@ public class Pollard {
 
 
 
-    private double discreteLog() throws InterruptedException {
+    private int discreteLog() throws InterruptedException {
         SeqStep singler = new SeqStep(1, 0, 0);
         SeqStep doubler = new SeqStep(1, 0, 0);
 

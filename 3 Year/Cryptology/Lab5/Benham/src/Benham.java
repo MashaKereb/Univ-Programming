@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Benham {
 
-    private static DCT dct = new DCT();
+    private static final DCT dct = new DCT();
 
 
     private static int getBit(byte b, int position) {
@@ -29,19 +29,18 @@ public class Benham {
                 //get array to write message
                 int[][] a = getBlueColorArray(img, i * 8 + j);
 
-                int [][] dcp = dct.ForwardDCT(a);
-                double k = Math.abs(dcp[1][2]) - Math.abs(dcp[2][1]);
-                byte o = check(dcp[1][2], dcp[2][1], dcp[3][3]);
+                int [][] dct_im = dct.ForwardDCT(a);
+                byte o = check(dct_im[1][2], dct_im[2][1], dct_im[3][3]);
 
                 if (getBit(msg[i], j) == 1) {
                     if (o != 1) {
-                        dcp[3][3] = (dcp[2][1] < dcp[1][2]) ? (dcp[2][1] - 25) : (dcp[1][2] - 25);
+                        dct_im[3][3] = (dct_im[2][1] < dct_im[1][2]) ? (dct_im[2][1] - 25) : (dct_im[1][2] - 25);
                     }
                 } else if (o != 0) {
-                    dcp[3][3] = (dcp[2][1] > dcp[1][2]) ? (dcp[2][1] + 25) : (dcp[1][2] + 25);
+                    dct_im[3][3] = (dct_im[2][1] > dct_im[1][2]) ? (dct_im[2][1] + 25) : (dct_im[1][2] + 25);
                 }
 
-                setBlueColorArray(img, i * 8 + j, dct.InverseDCT(dcp));
+                setBlueColorArray(img, i * 8 + j, dct.InverseDCT(dct_im));
             }
         }
     }
@@ -56,9 +55,10 @@ public class Benham {
         return -1;
     }
 
-    public static void getCipherMessage(BufferedImage img) {
+    public static StringBuilder getCipherMessage(BufferedImage img) {
         int i = 0;
         byte[] b = new byte[1];
+        StringBuilder str = new StringBuilder();
         while (true) {
 
             int[][] a = getBlueColorArray(img, i);
@@ -71,15 +71,15 @@ public class Benham {
                 break;
 
             if (i % 8 == 7) {
-                System.out.print(new String(b));
+                str.append(new String(b));
                 b[0] = 0;
             }
             i++;
         }
-        System.out.println();
+        return str;
     }
     public static int[][] getBlueColorArray(BufferedImage img, int numOfBlock) {
-        int numOfRows = img.getHeight() / 8;
+
         int numOfCols = img.getWidth() / 8;
         int[][] a = new int[8][8];
 
@@ -95,7 +95,7 @@ public class Benham {
         return a;
     }
     public static void setBlueColorArray(BufferedImage img, int numOfBlock, int a[][]) {
-        int numOfRows = img.getHeight() / 8;
+
         int numOfCols = img.getWidth() / 8;
         int row = numOfBlock / numOfCols;
         int col = numOfBlock % numOfCols;
@@ -110,14 +110,14 @@ public class Benham {
     }
     public static void main(String[] args) throws IOException {
 
-//        BufferedImage img = ImageIO.read(new File("src\\src.bmp"));
-//        getCipherPicture(img, "Hello world!");
-//        ImageIO.write(img, "bmp", new File("secret.bmp"));
+        BufferedImage img = ImageIO.read(new File("src\\src.bmp"));
+        getCipherPicture(img, "Hello 22");
+        ImageIO.write(img, "bmp", new File("secret.bmp"));
 
 
                 BufferedImage img2 = ImageIO.read(new File("secret.bmp"));
                 System.out.print("Cipher text: ");
-                getCipherMessage(img2);
+                System.out.println(getCipherMessage(img2));
 
     }
 }
