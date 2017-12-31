@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cannon Ball</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="container">
+    <input min="-2.5" max="1" step="0.1" type="range" id="rotation" style="position: absolute; z-index: 100; top: 100px; right: 100px"/>
+    <input min="1" max="15" type="range" id="force" style="position: absolute; z-index: 100; top: 150px; right: 100px"/>
+    <input value="Start" type="button" class="button" id="start" style="position: absolute; z-index: 100; top: 250px; right: 100px; width: 130px;">
+    </div>
+    <script src="app/app.bundle.js"></script>
+    <script>
+        let app = new App.Graphics(document.querySelector("#canvas"));
+    </script>
+</body>
+</html>

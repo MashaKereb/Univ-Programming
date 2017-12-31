@@ -1,0 +1,17 @@
+.custom-color{
+    background-color: #169674;
+    border-color: #169674;
+}
+.custom-color:hover{
+    background-color: #169674;
+    border-color: #169674;
+}
+
+#display-right{
+    float: right;
+    width: 150px;
+}
+
+#display-right h2{
+    margin-top: 10px;
+}
